@@ -1,26 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <title>Search Events</title>
-</head>
-<body>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col md-6 m-auto">
-                <h3 class="text-center mb-3">
-                    Search Events :)
-                </h3>
-                <div class="form-group">
-                    <input type="text" id="Search" class="input form-control form-control-lg" placeholder="Enter events name">
-                </div>
-                <div id="match-list"></div>
-            </div>
-        </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Examen</title>
+  </head>
+  <style></style>
+  <body>
+    <div class="container text-center">
+      <h1>Search Events :)</h1>
+      <div class="srch">
+        <label for="name"> Busqueda por Nombre: </label>
+        <input type="text" id="nombre" name="name" />
+        <button id="nombreSrch">Buscar</button>
+      </div>
+      <div class="srch">
+        <label for="id"> Busqueda por ID: </label>
+        <input type="text" id="idSrch" name="id" />
+        <button id="ID">Buscar</button>
+      </div>
+      <link
+        rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+        crossorigin="anonymous"
+      />
+      <div class="data"></div>
     </div>
-    
-    <script src="js/main.js"></script>
-</body>
+  </body>
+  <script
+    src="https://code.jquery.com/jquery-3.5.1.js"
+    integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    $("#nombreSrch").on("click", () => {
+      $(".data").html("");
+      fetch("https://jsonplaceholder.typicode.com/photos")
+        .then((data) => data.text())
+        .then(function (data) {
+          var respuesta = JSON.parse(data);
+          var name = $("#nombre").val();
+          var elements = [];
+          for (var i = 0; i < respuesta.length; i++) {
+            if (respuesta[i].title.includes(name)) {
+              elements.push(respuesta[i]);
+            }
+          }
+          for (var i = 0; i < elements.length; i++) {
+            nuevaData = $('<div class="item">');
+            nuevaData.attr("class", "event col-md-6");
+            nuevaData.append("<p id='title'>" + elements[i].title + "</p>","<img src='" + elements[i].url + "'>");
+            $(".data").append(nuevaData);
+          }
+          $("#nombre").val("");
+        })
+        .catch((err) => console.log(err));
+    });
+
+    $("#ID").on("click", () => {
+      $(".data").html("");
+      var id = parseInt($("#idSrch").val());
+      $("#idSrch").val("");
+      fetch("https://jsonplaceholder.typicode.com/photos")
+        .then((data) => data.text())
+        .then(function (data) {
+          var respuesta = JSON.parse(data);
+          nuevaData = $('<div class="item">');
+          nuevaData.attr("class", "event col-md-6");
+          nuevaData.append("<p id='title'>" + respuesta[id - 1].title + "</p>","<img src='" + respuesta[id - 1].url + "'>");
+          $(".data").append(nuevaData);
+        })
+        .catch((err) => console.log(err));
+    });
+  </script>
 </html>
