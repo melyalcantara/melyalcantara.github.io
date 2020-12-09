@@ -5,20 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Examen</title>
   </head>
-  <style></style>
+  <style type=>
+    .container{
+      color: sandybrown;
+    }
+    .text{
+      color: salmon;
+    }
+  </style>
+
   <body>
     <div class="container text-center">
       <h1>Search Events :)</h1>
+
+      <p class="text"> Los álbumes estan divididos por categoria:
+        <br>
+        1. Rock <br>
+        2. Pop  <br>
+        3. Jazz  <br>
+        4. Metal <br>
+      </p>
+
       <div class="srch">
-        <label for="name"> Busqueda por Nombre: </label>
+        <label for="name"> Name search: </label>
         <input type="text" id="nombre" name="name" />
-        <button id="nombreSrch">Buscar</button>
+        <button id="nombreSrch" class="btn btn-outline-warning" >Buscar</button>
       </div>
+    
       <div class="srch">
-        <label for="id"> Busqueda por ID: </label>
-        <input type="text" id="idSrch" name="id" />
-        <button id="ID">Buscar</button>
+        <label for="id"> ID search: </label>
+        <input type="text" id="idSrch" name="id"  />
+        <button id="ID" class="btn btn-outline-warning">Buscar</button>
       </div>
+    
+      <div class="container">
+        <div class="srch">
+          <label for="album"> Album ID search: </label>
+          <input type="text" id="IDAlbum" name="album" />
+          <button id="albumSrch" class="btn btn-outline-warning">Buscar</button>
+        </div>
       <link
         rel="stylesheet"
         href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
@@ -34,6 +59,7 @@
     crossorigin="anonymous"
   ></script>
   <script>
+    
     $("#nombreSrch").on("click", () => {
       $(".data").html("");
       fetch("https://jsonplaceholder.typicode.com/photos")
@@ -70,6 +96,33 @@
           nuevaData.attr("class", "event col-md-6");
           nuevaData.append("<p id='title'>" + respuesta[id - 1].title + "</p>","<img src='" + respuesta[id - 1].url + "'>");
           $(".data").append(nuevaData);
+        })
+        .catch((err) => console.log(err));
+    });
+
+    $("#albumSrch").on("click", () => {
+      $(".data").html("");
+      fetch("https://jsonplaceholder.typicode.com/photos")
+        .then((data) => data.text())
+        .then(function (data) {
+          var respuesta = JSON.parse(data);
+          var albumId = parseInt($("#IDAlbum").val());
+          var elements = [];
+          for (var i = 0; i < respuesta.length; i++) {
+            if (respuesta[i].albumId === albumId) {
+              elements.push(respuesta[i]);
+            }
+          }
+          console.log(elements);
+          for (var g = 0; g < elements.length; g++) {
+            nuevaData = $('<div class="item">');
+            nuevaData.attr("class", "event col-md-6");
+            var newP = "<p id='title'>" + elements[g].title + "</p>";
+            var img = "<img src='" + elements[g].url + "'>";
+            nuevaData.append(newP,img);
+            $(".data").append(nuevaData);
+          }
+          $("#IDAlbum").val("");
         })
         .catch((err) => console.log(err));
     });
